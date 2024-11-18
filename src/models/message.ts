@@ -27,10 +27,6 @@ const messageSchema = new mongoose.Schema<Message>({
 	reminders: { type: messageRemindersSchema, required: true },
 	email_data: { type: messageEmailDataSchema, required: true },
 	summary: { type: String, required: true },
-	priorities: [{ type: String }],
-	categories: [{ type: String }],
-	labels: [{ type: String }],
-	digests: [{ type: String }],
 	embedding: [{ type: Number }],
 	keywords: [{ type: String }],
 	unsubscribe_link: { type: String, required: false, default: null },
@@ -67,10 +63,6 @@ export class MessageModel {
 			},
 			email_data: emailData,
 			summary,
-			priorities: [],
-			categories: [],
-			labels: [],
-			digests: [],
 			embedding: [],
 			keywords: [],
 			unsubscribe_link: null,
@@ -106,34 +98,6 @@ export class MessageModel {
 		summary: string
 	): Promise<Message | null> {
 		return this.updateField(messageId, "summary", summary)
-	}
-
-	static async updatePriorities(
-		messageId: string,
-		priorities: string[]
-	): Promise<Message | null> {
-		return this.updateField(messageId, "priorities", priorities)
-	}
-
-	static async updateCategories(
-		messageId: string,
-		categories: string[]
-	): Promise<Message | null> {
-		return this.updateField(messageId, "categories", categories)
-	}
-
-	static async updateLabels(
-		messageId: string,
-		labels: string[]
-	): Promise<Message | null> {
-		return this.updateField(messageId, "labels", labels)
-	}
-
-	static async updateDigests(
-		messageId: string,
-		digests: string[]
-	): Promise<Message | null> {
-		return this.updateField(messageId, "digests", digests)
 	}
 
 	static async updateEmbedding(

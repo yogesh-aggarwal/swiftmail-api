@@ -32,7 +32,7 @@ export type UserAIPreferences = z.infer<typeof UserAIPreferences>
 
 // Inbox Preferences schema
 export const UserInboxPreferences = z.object({
-	priorities: z.array(z.string()),
+	priority: z.array(z.string()),
 	priority_rules: z.array(z.string()),
 	labels: z.array(z.string()),
 	label_rules: z.array(z.string()),

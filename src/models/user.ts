@@ -24,7 +24,7 @@ const userAIPreferencesSchema = new mongoose.Schema({
 })
 
 const userInboxPreferencesSchema = new mongoose.Schema({
-	priorities: [{ type: String }],
+	priority: [{ type: String }],
 	priority_rules: [{ type: String }],
 	labels: [{ type: String }],
 	label_rules: [{ type: String }],
@@ -94,7 +94,7 @@ export class UserModel {
 						self_description: "",
 					},
 					inbox: {
-						priorities: ["Low", "Medium", "High"],
+						priority: ["Low", "Medium", "High"],
 						priority_rules: [],
 						labels: ["Personal", "Work", "Shopping"],
 						label_rules: [],
