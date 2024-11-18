@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/main.ts",
   "scripts": {
-    "start": "tsx src/main.ts",
+    "start": "tsx .",
+    "dev": "tsx .",
     "ts-check": "tsc --noEmit",
     "amend": "git add . && git commit --amend --no-edit && git push origin main -f",
     "e-amend": "git add . && git commit --amend && git push origin main -f",
