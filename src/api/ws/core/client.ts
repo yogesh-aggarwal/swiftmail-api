@@ -1,5 +1,6 @@
 import { Socket } from "socket.io"
 import { WSBaseEvent } from "../events/event"
+import { WSInboxEvent } from "../events/inbox"
 import { WSUserEvent } from "../events/user"
 
 export class WSClient {
@@ -28,6 +29,8 @@ export class WSClient {
 		const events: (typeof WSBaseEvent)[] = [
 			// Common events
 			WSUserEvent,
+			// Inbox events
+			WSInboxEvent,
 		]
 
 		// Bind events to the socket
