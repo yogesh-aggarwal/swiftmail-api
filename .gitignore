@@ -1,0 +1,8 @@
+node_modules/
+Logs/
+Data/
+pwd
+*.out
+
+.env
+credentials.json

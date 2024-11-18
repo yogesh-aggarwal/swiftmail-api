@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"esModuleInterop": true,
+		"lib": ["ESNext"],
+		"target": "es6",
+		"moduleResolution": "node",
+		"sourceMap": true,
+		"outDir": "dist",
+		"resolveJsonModule": true,
+
+		"baseUrl": ".",
+		"paths": {
+			"@/rest/*": ["src/api/rest/*"],
+			"@/ws/*": ["src/api/ws/*"],
+
+			"@/*": ["src/*"]
+		}
+	},
+	"lib": ["es2015"]
+}

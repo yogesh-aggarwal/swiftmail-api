@@ -1,0 +1,37 @@
+{
+  "name": "swiftmail-ws",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/main.ts",
+  "scripts": {
+    "start": "tsx src/main.ts",
+    "ts-check": "tsc --noEmit",
+    "amend": "git add . && git commit --amend --no-edit && git push origin main -f",
+    "e-amend": "git add . && git commit --amend && git push origin main -f",
+    "deploy": "npm run ts-check && git push origin main && git update-ref -d refs/heads/production && git checkout -b production && git push origin production -f && git checkout main"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "firebase-admin": "^11.5.0",
+    "mongoose": "^8.8.1",
+    "node-cron": "^3.0.2",
+    "socket.io": "^4.8.1",
+    "uuid": "^9.0.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/http-proxy": "^1.17.10",
+    "@types/mongoose": "^5.11.97",
+    "@types/node-cron": "^3.0.8",
+    "@types/uuid": "^9.0.2",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.0.3"
+  }
+}
