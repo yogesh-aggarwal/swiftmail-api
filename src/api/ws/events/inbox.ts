@@ -40,8 +40,11 @@ export class WSInboxEvent extends WSBaseEvent {
 	async on() {
 		this.socket.on("inbox", async () => {
 			// First fetch user preferences
-			const user = await UserDBModel.find({ id: this.userID }).limit(1).exec()
-			if (!user) throw new Error("User not found")
+			const user = await UserDBModel.find({ _id: this.userID }).limit(1).exec()
+			if (!user.length) {
+				console.error("User not found")
+				return
+			}
 			this.userPrefs = user[0].data.preferences
 
 			// Initial inbox data emit
@@ -80,7 +83,7 @@ export class WSInboxEvent extends WSBaseEvent {
 				await this.prepareAndEmitInboxData()
 			})
 			this.userChangeStream.on("change", async () => {
-				const updatedUser = await UserDBModel.find({ id: this.userID })
+				const updatedUser = await UserDBModel.find({ _id: this.userID })
 					.limit(1)
 					.exec()
 				if (updatedUser) {
@@ -94,9 +97,9 @@ export class WSInboxEvent extends WSBaseEvent {
 	private async prepareAndEmitInboxData() {
 		const threads = await ThreadDBModel.find({
 			user_id: this.userID,
-			"flags.is_trash": false,
-			"flags.is_spam": false,
-			"flags.is_archived": false,
+			// "flags.is_trash": false,
+			// "flags.is_spam": false,
+			// "flags.is_archived": false,
 		}).sort({ date_updated: -1 })
 
 		const categorizedInbox = await this.categorizeThreads(threads)
