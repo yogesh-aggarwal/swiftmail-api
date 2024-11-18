@@ -4,14 +4,12 @@ import { UserDBModel } from "@/models/user"
 import { UserPreferences } from "@/models/user.types"
 import mongoose from "mongoose"
 import { WSBaseEvent } from "./event"
-
-enum InboxSubCategoryName {
-	NeedsAttention = "Needs Attention",
-	Unread = "Unread",
-	EverythingElse = "Everything Else",
-}
-type InboxSubCategory = Record<InboxSubCategoryName, Thread[]>
-type InboxCategories = Record<string, InboxSubCategory>
+import {
+	WSInboxEventInbox,
+	WSInboxEventInboxCategories,
+	WSInboxEventInboxCategory,
+	WSInboxEventInboxSubCategory,
+} from "./inbox.types"
 
 class ThreadSubCategoryDeterminerStrategy {
 	thread: Thread
@@ -22,11 +20,11 @@ class ThreadSubCategoryDeterminerStrategy {
 		this.userPrefs = user
 	}
 
-	determineSubCategory(): InboxSubCategoryName {
+	determineSubCategory(): WSInboxEventInboxSubCategory {
 		if (this.needsAttention(this.thread))
-			return InboxSubCategoryName.NeedsAttention
-		if (!this.thread.flags.is_read) return InboxSubCategoryName.Unread
-		return InboxSubCategoryName.EverythingElse
+			return WSInboxEventInboxSubCategory.NeedsAttention
+		if (!this.thread.flags.is_read) return WSInboxEventInboxSubCategory.Unread
+		return WSInboxEventInboxSubCategory.EverythingElse
 	}
 
 	private needsAttention(thread: Thread): boolean {
@@ -105,16 +103,21 @@ export class WSInboxEvent extends WSBaseEvent {
 		this.socket.emit("inbox", categorizedInbox)
 	}
 
-	private async categorizeThreads(threads: Thread[]): Promise<InboxCategories> {
+	private async categorizeThreads(
+		threads: Thread[]
+	): Promise<WSInboxEventInbox> {
 		// Initialize empty category groups
-		const emptyGroup = (): InboxSubCategory => ({
-			[InboxSubCategoryName.NeedsAttention]: [],
-			[InboxSubCategoryName.Unread]: [],
-			[InboxSubCategoryName.EverythingElse]: [],
+		const emptyGroup = (): WSInboxEventInboxCategory => ({
+			unreadCount: 0,
+			subcategories: {
+				[WSInboxEventInboxSubCategory.NeedsAttention]: [],
+				[WSInboxEventInboxSubCategory.Unread]: [],
+				[WSInboxEventInboxSubCategory.EverythingElse]: [],
+			},
 		})
 
 		// Initialize empty categories
-		const categories: InboxCategories = {}
+		const categories: WSInboxEventInboxCategories = {}
 
 		// Categorize each thread
 		for (const thread of threads) {
@@ -126,11 +129,18 @@ export class WSInboxEvent extends WSBaseEvent {
 					this.userPrefs
 				).determineSubCategory()
 
-				categories[category][subCategory].push(thread)
+				categories[category].subcategories[subCategory].push(thread)
+				categories[category].unreadCount += thread.flags.is_read ? 0 : 1
 			}
 		}
 
-		return categories
+		const categoryOrder = Object.keys(categories)
+		const unreadCount = Object.values(categories).reduce(
+			(acc, curr) => acc + curr.unreadCount,
+			0
+		)
+
+		return { unreadCount, categories, categoryOrder }
 	}
 
 	async off() {
