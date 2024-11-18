@@ -24,9 +24,10 @@ export const Thread = z.object({
 	summary: z.string(),
 	thread_id: z.string(),
 	flags: ThreadFlags,
-	priority: z.array(z.string()),
+	priority: z.string(),
 	categories: z.array(z.string()),
 	labels: z.array(z.string()),
 	digests: z.array(z.string()),
 })
 export type Thread = z.infer<typeof Thread>
+// Type for thread creation parameters

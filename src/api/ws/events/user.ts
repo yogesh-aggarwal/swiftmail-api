@@ -8,7 +8,7 @@ export class WSUserEvent extends WSBaseEvent {
 	async on() {
 		this.socket.on("user", async () => {
 			// Initial user data emit
-			const initialUser = await UserDBModel.find({ id: this.userID })
+			const initialUser = await UserDBModel.find({ _id: this.userID })
 				.limit(1)
 				.exec()
 			if (initialUser.length > 0) {
@@ -20,7 +20,7 @@ export class WSUserEvent extends WSBaseEvent {
 				[
 					{
 						$match: {
-							"documentKey.id": this.userID,
+							"documentKey._id": this.userID,
 							operationType: { $in: ["update", "replace"] },
 						},
 					},
@@ -29,7 +29,7 @@ export class WSUserEvent extends WSBaseEvent {
 			)
 
 			this.userChangeStream.on("change", async () => {
-				const updatedUser = await UserDBModel.find({ id: this.userID })
+				const updatedUser = await UserDBModel.find({ _id: this.userID })
 					.limit(1)
 					.exec()
 				if (updatedUser.length > 0) {
