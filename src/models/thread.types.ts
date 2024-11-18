@@ -1,4 +1,3 @@
-import mongoose from "mongoose"
 import { z } from "zod"
 
 // Thread Flags schema
@@ -15,7 +14,7 @@ export type ThreadFlags = z.infer<typeof ThreadFlags>
 
 // Main Thread schema
 export const Thread = z.object({
-	_id: z.instanceof(mongoose.Types.ObjectId),
+	id: z.string(),
 	user_id: z.string(),
 	date_updated: z.number(),
 	date_created: z.number(),

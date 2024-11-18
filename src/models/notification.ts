@@ -3,6 +3,7 @@ import { Notification, NotificationStatus } from "./notification.types"
 
 // Mongoose schema
 const notificationSchema = new mongoose.Schema<Notification>({
+	id: { type: String, required: true },
 	user_id: { type: String, required: true },
 	date_created: { type: Number, required: true },
 	date_updated: { type: Number, required: true },

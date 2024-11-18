@@ -1,4 +1,5 @@
 import { Socket } from "socket.io"
+import { WSDigestEvent } from "../events/digest"
 import { WSBaseEvent } from "../events/event"
 import { WSInboxEvent } from "../events/inbox"
 import { WSUserEvent } from "../events/user"
@@ -31,6 +32,8 @@ export class WSClient {
 			WSUserEvent,
 			// Inbox events
 			WSInboxEvent,
+			// Digest events
+			WSDigestEvent,
 		]
 
 		// Bind events to the socket

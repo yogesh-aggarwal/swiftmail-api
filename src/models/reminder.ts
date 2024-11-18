@@ -3,6 +3,7 @@ import { Reminder, ReminderState, ReminderType } from "./reminder.types"
 
 // Mongoose schema
 const reminderSchema = new mongoose.Schema<Reminder>({
+	id: { type: String, required: true },
 	user_id: { type: String, required: true },
 	date_created: { type: Number, required: true },
 	date_updated: { type: Number, required: true },

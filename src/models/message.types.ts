@@ -1,4 +1,3 @@
-import mongoose from "mongoose"
 import { z } from "zod"
 
 // Email Data schema
@@ -24,7 +23,7 @@ export type MessageReminders = z.infer<typeof MessageReminders>
 
 // Main Message schema
 export const Message = z.object({
-	_id: z.instanceof(mongoose.Types.ObjectId),
+	id: z.string(),
 	user_id: z.string(),
 	date_updated: z.number(),
 	date_created: z.number(),

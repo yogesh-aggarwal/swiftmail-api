@@ -3,6 +3,7 @@ import { Digest } from "./digest.types"
 
 // Mongoose schema
 const digestSchema = new mongoose.Schema<Digest>({
+	id: { type: String, required: true },
 	user_id: { type: String, required: true },
 	date_created: { type: Number, required: true },
 	date_updated: { type: Number, required: true },

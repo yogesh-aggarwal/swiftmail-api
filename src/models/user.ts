@@ -47,6 +47,7 @@ const userDataSchema = new mongoose.Schema({
 
 // Main User Schema
 const userSchema = new mongoose.Schema<User>({
+	id: { type: String, required: true },
 	metadata: { type: userMetadataSchema, required: true },
 	dp: { type: String, required: true },
 	email: { type: String, required: true, unique: true },
@@ -77,7 +78,7 @@ export class UserModel {
 	): Promise<User> {
 		const now = Date.now()
 		const user = new UserDBModel({
-			_id: new mongoose.Types.ObjectId(id),
+			id: new mongoose.Types.ObjectId(id),
 			metadata: {
 				last_seen: now,
 				date_created: now,

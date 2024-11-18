@@ -1,4 +1,3 @@
-import mongoose from "mongoose"
 import { z } from "zod"
 
 // Metadata schema
@@ -60,7 +59,7 @@ export type UserData = z.infer<typeof UserData>
 
 // Main User schema
 export const User = z.object({
-	_id: z.instanceof(mongoose.Types.ObjectId),
+	id: z.string(),
 	metadata: UserMetadata,
 	dp: z.string(),
 	email: z.string().email(),

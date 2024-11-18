@@ -16,6 +16,7 @@ const threadFlagsSchema = new mongoose.Schema({
 
 // Main Thread Schema
 const threadSchema = new mongoose.Schema<Thread>({
+	id: { type: String, required: true },
 	user_id: { type: String, required: true },
 	date_updated: { type: Number, required: true },
 	date_created: { type: Number, required: true },
@@ -121,7 +122,7 @@ export class ThreadModel {
 	}
 
 	static async toggleStarred(thread: Thread): Promise<Thread | null> {
-		return this.updateFlags(thread._id.toString(), {
+		return this.updateFlags(thread.id.toString(), {
 			is_starred: !thread.flags.is_starred,
 		})
 	}

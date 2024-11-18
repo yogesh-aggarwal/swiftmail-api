@@ -40,7 +40,7 @@ export class WSInboxEvent extends WSBaseEvent {
 	async on() {
 		this.socket.on("inbox", async () => {
 			// First fetch user preferences
-			const user = await UserDBModel.find({ _id: this.userID }).limit(1).exec()
+			const user = await UserDBModel.find({ id: this.userID }).limit(1).exec()
 			if (!user.length) {
 				console.error("User not found")
 				return
@@ -68,7 +68,7 @@ export class WSInboxEvent extends WSBaseEvent {
 				[
 					{
 						$match: {
-							"fullDocument._id": this.userID,
+							"fullDocument.id": this.userID,
 							operationType: { $in: ["update", "replace"] },
 							"updateDescription.updatedFields": {
 								$regex: "^data.preferences",
@@ -83,7 +83,7 @@ export class WSInboxEvent extends WSBaseEvent {
 				await this.prepareAndEmitInboxData()
 			})
 			this.userChangeStream.on("change", async () => {
-				const updatedUser = await UserDBModel.find({ _id: this.userID })
+				const updatedUser = await UserDBModel.find({ id: this.userID })
 					.limit(1)
 					.exec()
 				if (updatedUser) {

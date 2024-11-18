@@ -21,6 +21,7 @@ const messageRemindersSchema = new mongoose.Schema<MessageReminders>({
 
 // Main Message Schema
 const messageSchema = new mongoose.Schema<Message>({
+	id: { type: String, required: true },
 	user_id: { type: String, required: true },
 	date_updated: { type: Number, required: true },
 	date_created: { type: Number, required: true },
