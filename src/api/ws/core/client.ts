@@ -18,11 +18,11 @@ export class WSClient {
 	}
 
 	private handleConnect() {
-		console.log(`User connected with UID: ${this.userID}`)
+		// console.log(`User connected with UID: ${this.userID}`)
 	}
 
 	private handleDisconnect() {
-		console.log(`User disconnected with UID: ${this.userID}`)
+		// console.log(`User disconnected with UID: ${this.userID}`)
 	}
 
 	private bindAdditionalEvents() {

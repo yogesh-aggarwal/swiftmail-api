@@ -5,7 +5,7 @@
   "main": "src/main.ts",
   "scripts": {
     "start": "tsx .",
-    "dev": "tsx .",
+    "dev": "clear && tsx .",
     "ts-check": "tsc --noEmit",
     "amend": "git add . && git commit --amend --no-edit && git push origin main -f",
     "e-amend": "git add . && git commit --amend && git push origin main -f",
