@@ -18,7 +18,7 @@ export const DigestDBModel = mongoose.model<Digest>("Digest", digestSchema)
 export class DigestModel {
 	static async getById(digestId: string): Promise<Digest | null> {
 		try {
-			return await DigestDBModel.findById(digestId)
+			return await DigestDBModel.findOne({ id: digestId })
 		} catch (error) {
 			console.error("Error fetching digest by ID:", error)
 			return null
@@ -57,8 +57,8 @@ export class DigestModel {
 		value: Digest[K]
 	): Promise<Digest | null> {
 		try {
-			return await DigestDBModel.findByIdAndUpdate(
-				digestId,
+			return await DigestDBModel.findOneAndUpdate(
+				{ id: digestId },
 				{
 					$set: {
 						[field]: value,

@@ -102,8 +102,8 @@ export class ThreadModel {
 		updates: Partial<Thread["flags"]>
 	): Promise<Thread | null> {
 		try {
-			return await ThreadDBModel.findByIdAndUpdate(
-				threadId,
+			return await ThreadDBModel.findOneAndUpdate(
+				{ id: threadId },
 				{ $set: { flags: updates } },
 				{ new: true }
 			)
@@ -121,10 +121,12 @@ export class ThreadModel {
 		return this.updateFlags(threadId, { is_read: false })
 	}
 
-	static async toggleStarred(thread: Thread): Promise<Thread | null> {
-		return this.updateFlags(thread.id.toString(), {
-			is_starred: !thread.flags.is_starred,
-		})
+	static async markAsStarred(threadId: string): Promise<Thread | null> {
+		return this.updateFlags(threadId, { is_starred: true })
+	}
+
+	static async markAsUnstarred(threadId: string): Promise<Thread | null> {
+		return this.updateFlags(threadId, { is_starred: false })
 	}
 
 	static async markAsArchived(threadId: string): Promise<Thread | null> {
@@ -173,24 +175,20 @@ export class ThreadModel {
 
 			switch (action) {
 				case "set":
-					// Directly set the priority array
 					updateObj.$set = { priority: Array.isArray(priority) ? priority : [] }
 					break
 				case "add":
-					// Add single priority to array if not present
 					updateObj.$addToSet = { priority: priority }
 					break
 				case "remove":
-					// Remove single priority from array
 					updateObj.$pull = { priority: priority }
 					break
 				case "clear":
-					// Clear all priorities
 					updateObj.$set = { priority: [] }
 					break
 			}
 
-			return await ThreadDBModel.findByIdAndUpdate(threadId, updateObj, {
+			return await ThreadDBModel.findOneAndUpdate({ id: threadId }, updateObj, {
 				new: true,
 			})
 		} catch (error) {
@@ -204,8 +202,8 @@ export class ThreadModel {
 		categories: string[]
 	): Promise<Thread | null> {
 		try {
-			return await ThreadDBModel.findByIdAndUpdate(
-				threadId,
+			return await ThreadDBModel.findOneAndUpdate(
+				{ id: threadId },
 				{
 					$set: {
 						categories,
@@ -225,8 +223,8 @@ export class ThreadModel {
 		labels: string[]
 	): Promise<Thread | null> {
 		try {
-			return await ThreadDBModel.findByIdAndUpdate(
-				threadId,
+			return await ThreadDBModel.findOneAndUpdate(
+				{ id: threadId },
 				{
 					$set: {
 						labels,
@@ -246,8 +244,8 @@ export class ThreadModel {
 		digests: string[]
 	): Promise<Thread | null> {
 		try {
-			return await ThreadDBModel.findByIdAndUpdate(
-				threadId,
+			return await ThreadDBModel.findOneAndUpdate(
+				{ id: threadId },
 				{
 					$set: {
 						digests,
@@ -268,8 +266,8 @@ export class ThreadModel {
 		label: string
 	): Promise<Thread | null> {
 		try {
-			return await ThreadDBModel.findByIdAndUpdate(
-				threadId,
+			return await ThreadDBModel.findOneAndUpdate(
+				{ id: threadId },
 				{
 					$addToSet: { labels: label },
 					$set: { date_updated: Date.now() },
@@ -287,8 +285,8 @@ export class ThreadModel {
 		label: string
 	): Promise<Thread | null> {
 		try {
-			return await ThreadDBModel.findByIdAndUpdate(
-				threadId,
+			return await ThreadDBModel.findOneAndUpdate(
+				{ id: threadId },
 				{
 					$pull: { labels: label },
 					$set: { date_updated: Date.now() },
@@ -307,8 +305,8 @@ export class ThreadModel {
 		category: string
 	): Promise<Thread | null> {
 		try {
-			return await ThreadDBModel.findByIdAndUpdate(
-				threadId,
+			return await ThreadDBModel.findOneAndUpdate(
+				{ id: threadId },
 				{
 					$addToSet: { categories: category },
 					$set: { date_updated: Date.now() },
@@ -326,8 +324,8 @@ export class ThreadModel {
 		category: string
 	): Promise<Thread | null> {
 		try {
-			return await ThreadDBModel.findByIdAndUpdate(
-				threadId,
+			return await ThreadDBModel.findOneAndUpdate(
+				{ id: threadId },
 				{
 					$pull: { categories: category },
 					$set: { date_updated: Date.now() },
@@ -346,8 +344,8 @@ export class ThreadModel {
 		digest: string
 	): Promise<Thread | null> {
 		try {
-			return await ThreadDBModel.findByIdAndUpdate(
-				threadId,
+			return await ThreadDBModel.findOneAndUpdate(
+				{ id: threadId },
 				{
 					$addToSet: { digests: digest },
 					$set: { date_updated: Date.now() },
@@ -365,8 +363,8 @@ export class ThreadModel {
 		digest: string
 	): Promise<Thread | null> {
 		try {
-			return await ThreadDBModel.findByIdAndUpdate(
-				threadId,
+			return await ThreadDBModel.findOneAndUpdate(
+				{ id: threadId },
 				{
 					$pull: { digests: digest },
 					$set: { date_updated: Date.now() },
@@ -382,8 +380,8 @@ export class ThreadModel {
 	// Bulk operations
 	static async clearLabels(threadId: string): Promise<Thread | null> {
 		try {
-			return await ThreadDBModel.findByIdAndUpdate(
-				threadId,
+			return await ThreadDBModel.findOneAndUpdate(
+				{ id: threadId },
 				{
 					$set: {
 						labels: [],
@@ -400,8 +398,8 @@ export class ThreadModel {
 
 	static async clearCategories(threadId: string): Promise<Thread | null> {
 		try {
-			return await ThreadDBModel.findByIdAndUpdate(
-				threadId,
+			return await ThreadDBModel.findOneAndUpdate(
+				{ id: threadId },
 				{
 					$set: {
 						categories: [],
@@ -418,8 +416,8 @@ export class ThreadModel {
 
 	static async clearDigests(threadId: string): Promise<Thread | null> {
 		try {
-			return await ThreadDBModel.findByIdAndUpdate(
-				threadId,
+			return await ThreadDBModel.findOneAndUpdate(
+				{ id: threadId },
 				{
 					$set: {
 						digests: [],
@@ -430,6 +428,24 @@ export class ThreadModel {
 			)
 		} catch (error) {
 			console.error("Error clearing thread digests:", error)
+			return null
+		}
+	}
+
+	static async deleteThread(threadId: string): Promise<Thread | null> {
+		try {
+			return await ThreadDBModel.findOneAndUpdate(
+				{ id: threadId },
+				{
+					$set: {
+						flags: { is_trash: true },
+						date_updated: Date.now(),
+					},
+				},
+				{ new: true }
+			)
+		} catch (error) {
+			console.error("Error deleting thread:", error)
 			return null
 		}
 	}

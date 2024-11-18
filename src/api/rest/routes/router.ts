@@ -1,6 +1,7 @@
 import { Router } from "express"
 
 import { messageRouter } from "./message/router"
+import { threadRouter } from "./thread/router"
 
 export const rootRouter = Router()
 
@@ -13,3 +14,4 @@ rootRouter.get("/health", (_, res) => {
 })
 
 rootRouter.use("/message", messageRouter)
+rootRouter.use("/thread", threadRouter)

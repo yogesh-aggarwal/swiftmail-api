@@ -33,7 +33,7 @@ export const ReminderDBModel = mongoose.model<Reminder>(
 export class ReminderModel {
 	static async getById(reminderId: string): Promise<Reminder | null> {
 		try {
-			return await ReminderDBModel.findById(reminderId)
+			return await ReminderDBModel.findOne({ id: reminderId })
 		} catch (error) {
 			console.error("Error fetching reminder by ID:", error)
 			return null
@@ -69,8 +69,8 @@ export class ReminderModel {
 		type: ReminderType
 	): Promise<Reminder | null> {
 		try {
-			return await ReminderDBModel.findByIdAndUpdate(
-				reminderId,
+			return await ReminderDBModel.findOneAndUpdate(
+				{ id: reminderId },
 				{
 					$set: {
 						type,
@@ -90,8 +90,8 @@ export class ReminderModel {
 		state: ReminderState
 	): Promise<Reminder | null> {
 		try {
-			return await ReminderDBModel.findByIdAndUpdate(
-				reminderId,
+			return await ReminderDBModel.findOneAndUpdate(
+				{ id: reminderId },
 				{
 					$set: {
 						state,
@@ -111,8 +111,8 @@ export class ReminderModel {
 		scheduledAt: number
 	): Promise<Reminder | null> {
 		try {
-			return await ReminderDBModel.findByIdAndUpdate(
-				reminderId,
+			return await ReminderDBModel.findOneAndUpdate(
+				{ id: reminderId },
 				{
 					$set: {
 						scheduled_at: scheduledAt,
@@ -132,8 +132,8 @@ export class ReminderModel {
 		timeZone: string
 	): Promise<Reminder | null> {
 		try {
-			return await ReminderDBModel.findByIdAndUpdate(
-				reminderId,
+			return await ReminderDBModel.findOneAndUpdate(
+				{ id: reminderId },
 				{
 					$set: {
 						time_zone: timeZone,

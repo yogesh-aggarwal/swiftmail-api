@@ -33,5 +33,9 @@ export const Message = z.object({
 	embedding: z.array(z.number()),
 	keywords: z.array(z.string()),
 	unsubscribe_link: z.string().nullable(),
+	is_read: z.boolean().default(false),
+	is_starred: z.boolean().default(false),
+	labels: z.array(z.string()).default([]),
+	categories: z.array(z.string()).default([])
 })
 export type Message = z.infer<typeof Message>

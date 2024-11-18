@@ -31,6 +31,10 @@ const messageSchema = new mongoose.Schema<Message>({
 	embedding: [{ type: Number }],
 	keywords: [{ type: String }],
 	unsubscribe_link: { type: String, required: false, default: null },
+	is_read: { type: Boolean, required: true, default: false },
+	is_starred: { type: Boolean, required: true, default: false },
+	labels: [{ type: String }],
+	categories: [{ type: String }]
 })
 
 export const MessageDBModel = mongoose.model<Message>("Message", messageSchema)
@@ -40,7 +44,7 @@ export const MessageDBModel = mongoose.model<Message>("Message", messageSchema)
 export class MessageModel {
 	static async getById(messageId: string): Promise<Message | null> {
 		try {
-			return await MessageDBModel.findById(messageId)
+			return await MessageDBModel.findOne({ id: messageId })
 		} catch (error) {
 			console.error("Error fetching message by ID:", error)
 			return null
@@ -67,6 +71,10 @@ export class MessageModel {
 			embedding: [],
 			keywords: [],
 			unsubscribe_link: null,
+			is_read: false,
+			is_starred: false,
+			labels: [],
+			categories: []
 		})
 
 		return await message.save()
@@ -78,8 +86,8 @@ export class MessageModel {
 		value: Message[K]
 	): Promise<Message | null> {
 		try {
-			return await MessageDBModel.findByIdAndUpdate(
-				messageId,
+			return await MessageDBModel.findOneAndUpdate(
+				{ id: messageId },
 				{
 					$set: {
 						[field]: value,
@@ -120,6 +128,44 @@ export class MessageModel {
 		unsubscribeLink: string | null
 	): Promise<Message | null> {
 		return this.updateField(messageId, "unsubscribe_link", unsubscribeLink)
+	}
+
+	static async deleteMessage(messageId: string): Promise<boolean> {
+		try {
+			const result = await MessageDBModel.deleteOne({ id: messageId })
+			return result.deletedCount === 1
+		} catch (error) {
+			console.error("Error deleting message:", error)
+			return false
+		}
+	}
+
+	static async updateReadStatus(
+		messageId: string,
+		isRead: boolean
+	): Promise<Message | null> {
+		return this.updateField(messageId, "is_read", isRead)
+	}
+
+	static async updateStarredStatus(
+		messageId: string,
+		isStarred: boolean
+	): Promise<Message | null> {
+		return this.updateField(messageId, "is_starred", isStarred)
+	}
+
+	static async updateLabels(
+		messageId: string,
+		labels: string[]
+	): Promise<Message | null> {
+		return this.updateField(messageId, "labels", labels)
+	}
+
+	static async updateCategories(
+		messageId: string,
+		categories: string[]
+	): Promise<Message | null> {
+		return this.updateField(messageId, "categories", categories)
 	}
 }
 

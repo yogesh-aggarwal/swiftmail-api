@@ -29,7 +29,7 @@ export const NotificationDBModel = mongoose.model<Notification>(
 export class NotificationModel {
 	static async getById(notificationId: string): Promise<Notification | null> {
 		try {
-			return await NotificationDBModel.findById(notificationId)
+			return await NotificationDBModel.findOne({ id: notificationId })
 		} catch (error) {
 			console.error("Error fetching notification by ID:", error)
 			return null
@@ -67,7 +67,6 @@ export class NotificationModel {
 				date_updated: Date.now(),
 			}
 
-			// Update corresponding date field based on status
 			switch (status) {
 				case NotificationStatus.DISPATCHED:
 					updates.date_dispatched = Date.now()
@@ -80,8 +79,8 @@ export class NotificationModel {
 					break
 			}
 
-			return await NotificationDBModel.findByIdAndUpdate(
-				notificationId,
+			return await NotificationDBModel.findOneAndUpdate(
+				{ id: notificationId },
 				{ $set: updates },
 				{ new: true }
 			)
