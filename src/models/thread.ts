@@ -413,6 +413,17 @@ export class ThreadModel {
 			return []
 		}
 	}
+
+	static async getMessagesByThreadId(
+		threadId: string,
+		includeEmbedding: boolean = false
+	) {
+		// Conditionally include or exclude the 'embedding' field
+		const selectFields = includeEmbedding ? "" : "-embedding"
+		return await MessageDBModel.find({ thread_id: threadId })
+			.sort({ date_created: 1 })
+			.select(selectFields)
+	}
 }
 
 // ----------------------------------------------------------------------------

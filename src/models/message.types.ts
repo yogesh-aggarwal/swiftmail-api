@@ -29,6 +29,7 @@ export const Message = z.object({
 	date_created: z.number(),
 	reminders: MessageReminders,
 	email_data: MessageEmailData,
+	thread_id: z.string(),
 	summary: z.string(),
 	embedding: z.array(z.number()),
 	keywords: z.array(z.string()),
@@ -36,6 +37,6 @@ export const Message = z.object({
 	is_read: z.boolean().default(false),
 	is_starred: z.boolean().default(false),
 	labels: z.array(z.string()).default([]),
-	categories: z.array(z.string()).default([])
+	categories: z.array(z.string()).default([]),
 })
 export type Message = z.infer<typeof Message>

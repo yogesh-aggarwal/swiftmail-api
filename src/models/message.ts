@@ -27,6 +27,7 @@ const messageSchema = new mongoose.Schema<Message>({
 	date_created: { type: Number, required: true },
 	reminders: { type: messageRemindersSchema, required: true },
 	email_data: { type: messageEmailDataSchema, required: true },
+	thread_id: { type: String, required: true },
 	summary: { type: String, required: true },
 	embedding: [{ type: Number }],
 	keywords: [{ type: String }],
@@ -34,7 +35,7 @@ const messageSchema = new mongoose.Schema<Message>({
 	is_read: { type: Boolean, required: true, default: false },
 	is_starred: { type: Boolean, required: true, default: false },
 	labels: [{ type: String }],
-	categories: [{ type: String }]
+	categories: [{ type: String }],
 })
 
 export const MessageDBModel = mongoose.model<Message>("Message", messageSchema)
@@ -74,7 +75,7 @@ export class MessageModel {
 			is_read: false,
 			is_starred: false,
 			labels: [],
-			categories: []
+			categories: [],
 		})
 
 		return await message.save()
