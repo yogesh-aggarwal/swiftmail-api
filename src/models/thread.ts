@@ -36,29 +36,13 @@ export const ThreadDBModel = mongoose.model<Thread>("Thread", threadSchema)
 // ----------------------------------------------------------------------------
 
 export class ThreadModel {
+	// Thread Operations
 	static async getById(threadId: string): Promise<Thread | null> {
 		try {
 			return await ThreadDBModel.findById(threadId)
 		} catch (error) {
 			console.error("Error fetching thread by ID:", error)
 			return null
-		}
-	}
-
-	static async getMessagesByThread(
-		threadId: string,
-		page: number,
-		pageSize: number = 10
-	): Promise<Message[]> {
-		try {
-			const skip = (page - 1) * pageSize
-			return await MessageDBModel.find({ thread_id: threadId })
-				.sort({ date_created: 1 })
-				.skip(skip)
-				.limit(pageSize)
-		} catch (error) {
-			console.error("Error fetching messages by thread:", error)
-			return []
 		}
 	}
 
@@ -96,7 +80,25 @@ export class ThreadModel {
 		return await thread.save()
 	}
 
-	// Flag modification methods
+	static async deleteThread(threadId: string): Promise<Thread | null> {
+		try {
+			return await ThreadDBModel.findOneAndUpdate(
+				{ id: threadId },
+				{
+					$set: {
+						flags: { is_trash: true },
+						date_updated: Date.now(),
+					},
+				},
+				{ new: true }
+			)
+		} catch (error) {
+			console.error("Error deleting thread:", error)
+			return null
+		}
+	}
+
+	// Flag Modification Methods
 	static async updateFlags(
 		threadId: string,
 		updates: Partial<Thread["flags"]>
@@ -165,6 +167,7 @@ export class ThreadModel {
 		return this.updateFlags(threadId, { is_sent: true })
 	}
 
+	// Priority Methods
 	static async updatePriority(
 		threadId: string,
 		priority: string[] | string | null,
@@ -197,6 +200,7 @@ export class ThreadModel {
 		}
 	}
 
+	// Category Methods
 	static async updateCategories(
 		threadId: string,
 		categories: string[]
@@ -218,6 +222,25 @@ export class ThreadModel {
 		}
 	}
 
+	static async clearCategories(threadId: string): Promise<Thread | null> {
+		try {
+			return await ThreadDBModel.findOneAndUpdate(
+				{ id: threadId },
+				{
+					$set: {
+						categories: [],
+						date_updated: Date.now(),
+					},
+				},
+				{ new: true }
+			)
+		} catch (error) {
+			console.error("Error clearing thread categories:", error)
+			return null
+		}
+	}
+
+	// Label Methods
 	static async updateLabels(
 		threadId: string,
 		labels: string[]
@@ -239,28 +262,6 @@ export class ThreadModel {
 		}
 	}
 
-	static async updateDigests(
-		threadId: string,
-		digests: string[]
-	): Promise<Thread | null> {
-		try {
-			return await ThreadDBModel.findOneAndUpdate(
-				{ id: threadId },
-				{
-					$set: {
-						digests,
-						date_updated: Date.now(),
-					},
-				},
-				{ new: true }
-			)
-		} catch (error) {
-			console.error("Error updating thread digests:", error)
-			return null
-		}
-	}
-
-	// Label methods
 	static async addLabel(
 		threadId: string,
 		label: string
@@ -299,46 +300,46 @@ export class ThreadModel {
 		}
 	}
 
-	// Category methods
-	static async addCategory(
+	static async clearLabels(threadId: string): Promise<Thread | null> {
+		try {
+			return await ThreadDBModel.findOneAndUpdate(
+				{ id: threadId },
+				{
+					$set: {
+						labels: [],
+						date_updated: Date.now(),
+					},
+				},
+				{ new: true }
+			)
+		} catch (error) {
+			console.error("Error clearing thread labels:", error)
+			return null
+		}
+	}
+
+	// Digest Methods
+	static async updateDigests(
 		threadId: string,
-		category: string
+		digests: string[]
 	): Promise<Thread | null> {
 		try {
 			return await ThreadDBModel.findOneAndUpdate(
 				{ id: threadId },
 				{
-					$addToSet: { categories: category },
-					$set: { date_updated: Date.now() },
+					$set: {
+						digests,
+						date_updated: Date.now(),
+					},
 				},
 				{ new: true }
 			)
 		} catch (error) {
-			console.error("Error adding thread category:", error)
+			console.error("Error updating thread digests:", error)
 			return null
 		}
 	}
 
-	static async removeCategory(
-		threadId: string,
-		category: string
-	): Promise<Thread | null> {
-		try {
-			return await ThreadDBModel.findOneAndUpdate(
-				{ id: threadId },
-				{
-					$pull: { categories: category },
-					$set: { date_updated: Date.now() },
-				},
-				{ new: true }
-			)
-		} catch (error) {
-			console.error("Error removing thread category:", error)
-			return null
-		}
-	}
-
-	// Digest methods
 	static async addDigest(
 		threadId: string,
 		digest: string
@@ -377,43 +378,6 @@ export class ThreadModel {
 		}
 	}
 
-	// Bulk operations
-	static async clearLabels(threadId: string): Promise<Thread | null> {
-		try {
-			return await ThreadDBModel.findOneAndUpdate(
-				{ id: threadId },
-				{
-					$set: {
-						labels: [],
-						date_updated: Date.now(),
-					},
-				},
-				{ new: true }
-			)
-		} catch (error) {
-			console.error("Error clearing thread labels:", error)
-			return null
-		}
-	}
-
-	static async clearCategories(threadId: string): Promise<Thread | null> {
-		try {
-			return await ThreadDBModel.findOneAndUpdate(
-				{ id: threadId },
-				{
-					$set: {
-						categories: [],
-						date_updated: Date.now(),
-					},
-				},
-				{ new: true }
-			)
-		} catch (error) {
-			console.error("Error clearing thread categories:", error)
-			return null
-		}
-	}
-
 	static async clearDigests(threadId: string): Promise<Thread | null> {
 		try {
 			return await ThreadDBModel.findOneAndUpdate(
@@ -432,21 +396,21 @@ export class ThreadModel {
 		}
 	}
 
-	static async deleteThread(threadId: string): Promise<Thread | null> {
+	// Message Methods
+	static async getMessagesByThread(
+		threadId: string,
+		page: number,
+		pageSize: number = 10
+	): Promise<Message[]> {
 		try {
-			return await ThreadDBModel.findOneAndUpdate(
-				{ id: threadId },
-				{
-					$set: {
-						flags: { is_trash: true },
-						date_updated: Date.now(),
-					},
-				},
-				{ new: true }
-			)
+			const skip = (page - 1) * pageSize
+			return await MessageDBModel.find({ thread_id: threadId })
+				.sort({ date_created: 1 })
+				.skip(skip)
+				.limit(pageSize)
 		} catch (error) {
-			console.error("Error deleting thread:", error)
-			return null
+			console.error("Error fetching messages by thread:", error)
+			return []
 		}
 	}
 }
