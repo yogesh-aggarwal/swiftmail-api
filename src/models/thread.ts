@@ -39,7 +39,7 @@ export class ThreadModel {
 	// Thread Operations
 	static async getById(threadId: string): Promise<Thread | null> {
 		try {
-			return await ThreadDBModel.findById(threadId)
+			return await ThreadDBModel.findOne({ id: threadId })
 		} catch (error) {
 			console.error("Error fetching thread by ID:", error)
 			return null
@@ -80,7 +80,7 @@ export class ThreadModel {
 		return await thread.save()
 	}
 
-	static async deleteThread(threadId: string): Promise<Thread | null> {
+	static async updateTrashFlag(threadId: string): Promise<Thread | null> {
 		try {
 			return await ThreadDBModel.findOneAndUpdate(
 				{ id: threadId },
@@ -423,6 +423,48 @@ export class ThreadModel {
 		return await MessageDBModel.find({ thread_id: threadId })
 			.sort({ date_created: 1 })
 			.select(selectFields)
+	}
+
+	static async searchMessagesByThreadId(
+		threadId: string,
+		searchTerm: string
+	): Promise<Message[]> {
+		try {
+			return await MessageDBModel.find({
+				thread_id: threadId,
+				$or: [
+					{ "email_data.subject": { $regex: searchTerm, $options: "i" } },
+					{ "email_data.html_content": { $regex: searchTerm, $options: "i" } },
+					{ summary: { $regex: searchTerm, $options: "i" } },
+					{ keywords: { $regex: searchTerm, $options: "i" } },
+				],
+			}).sort({ date_created: 1 })
+		} catch (error) {
+			console.error("Error searching messages by thread:", error)
+			return []
+		}
+	}
+
+	static async searchThreadsByMessageContent(
+		searchTerm: string
+	): Promise<Thread[]> {
+		try {
+			// Find messages that match the search term
+			const messages = await MessageDBModel.find({
+				$or: [
+					{ "email_data.subject": { $regex: searchTerm, $options: "i" } },
+					{ "email_data.html_content": { $regex: searchTerm, $options: "i" } },
+					{ summary: { $regex: searchTerm, $options: "i" } },
+					{ keywords: { $regex: searchTerm, $options: "i" } },
+				],
+			}).distinct("thread_id")
+
+			// Find threads that have matching messages
+			return await ThreadDBModel.find({ id: { $in: messages } })
+		} catch (error) {
+			console.error("Error searching threads by message content:", error)
+			return []
+		}
 	}
 }
 
