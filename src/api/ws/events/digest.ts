@@ -102,6 +102,7 @@ export class WSDigestEvent extends WSBaseEvent {
 			digestsMap[digest.id] = {
 				id: digest.id,
 				name: digest.title,
+				description: digest.description,
 				unreadCount: 0,
 				threads: [],
 			}

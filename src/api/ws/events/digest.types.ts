@@ -9,6 +9,7 @@ export enum WSDigestEventSubCategory {
 export type WSDigestEventData = {
 	id: string
 	name: string
+	description: string
 	unreadCount: number
 	threads: Thread[]
 }
