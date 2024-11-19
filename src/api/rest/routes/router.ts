@@ -2,6 +2,7 @@ import { Router } from "express"
 
 import { messageRouter } from "./message/router"
 import { threadRouter } from "./thread/router"
+import { openaiRouter } from "./openai/router"
 
 export const rootRouter = Router()
 
@@ -15,3 +16,4 @@ rootRouter.get("/health", (_, res) => {
 
 rootRouter.use("/message", messageRouter)
 rootRouter.use("/thread", threadRouter)
+rootRouter.use("/openai", openaiRouter)
