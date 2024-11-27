@@ -2,7 +2,7 @@ import cors from "cors"
 import express from "express"
 import http from "http"
 
-import { rootRouter } from "@/rest/routes/router"
+import { restRouter } from "@/rest/routes/router"
 import { WSServer } from "@/ws/core/server"
 import mongoose from "mongoose"
 import { MONGO_URI, PORT } from "./core/constants"
@@ -26,7 +26,14 @@ app.use(cors({ origin: ["http://localhost:5173"] }))
 // Routes
 //----------------------------------------------------------------------------------------------
 
-app.use("/api", rootRouter)
+app.get("/", (_, res) => {
+	res.redirect("/health")
+})
+app.get("/health", (_, res) => {
+	res.status(200).send("OK")
+})
+
+app.use("/api", restRouter)
 
 //----------------------------------------------------------------------------------------------
 // WebSocket Server
