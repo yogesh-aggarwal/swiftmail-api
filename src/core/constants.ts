@@ -1,14 +1,20 @@
-export const PORT = process.env.PORT
-if (!PORT) {
-	throw new Error("PORT is required in environment variables")
+import { configDotenv } from "dotenv"
+configDotenv()
+
+// Helper function to load from environment variables and throw an error if the variable is not set
+function loadFromEnvOrThrow(key: string) {
+	const value = process.env[key]
+	if (!value) {
+		throw new Error(`${key} is required in environment variables`)
+	}
+	return value
 }
 
-export const MONGO_URI = process.env.MONGO_URI
-if (!MONGO_URI) {
-	throw new Error("MONGO_URI is required in environment variables")
-}
+// Env constants
+export const PORT = loadFromEnvOrThrow("PORT")
+export const MONGO_URI = loadFromEnvOrThrow("MONGO_URI")
+export const OPENAI_API_KEY = loadFromEnvOrThrow("OPENAI_API_KEY")
 
-export const OPENAI_API_KEY = process.env.OPENAI_API_KEY
-if (!OPENAI_API_KEY) {
-	throw new Error("OPENAI_API_KEY is required in environment variables")
-}
+// General constants
+export const IS_DEBUG = false
+export const MILLIS_IN_A_DAY = 1000 * 60 * 60 * 24

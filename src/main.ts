@@ -5,9 +5,8 @@ import http from "http"
 import { rootRouter } from "@/rest/routes/router"
 import { WSServer } from "@/ws/core/server"
 import mongoose from "mongoose"
-import { PORT } from "./constants"
-import { MONGO_URI } from "./core/constants"
-import { InitializeFirebase } from "./firebase"
+import { MONGO_URI, PORT } from "./core/constants"
+import { InitializeFirebase } from "./core/firebase"
 
 //----------------------------------------------------------------------------------------------
 // Express App
