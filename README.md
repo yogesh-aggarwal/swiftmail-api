@@ -1,1 +1,1 @@
-[![Better Stack Badge](https://uptime.betterstack.com/status-badges/v1/monitor/1ja5m.svg)](https://uptime.betterstack.com/?utm_source=status_badge)
+[![Better Stack Badge](https://uptime.betterstack.com/status-badges/v3/monitor/1ogi3.svg)](https://uptime.betterstack.com/?utm_source=status_badge)
