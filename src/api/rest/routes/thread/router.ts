@@ -3,7 +3,7 @@ import { DeleteThreadRoute } from "./delete"
 import { GetThreadRoute } from "./get"
 import { UpdateThreadLabelsRoute } from "./labels"
 import { GetThreadMessagesRoute } from "./messages"
-import { UpdateThreadReadStatusRoute } from "./read-status"
+import { UpdateThreadReadStatusRoute } from "./readStatus"
 import { SearchThreadsByMessageContentRoute } from "./searchThreads"
 import { UpdateThreadStarredStatusRoute } from "./star-status"
 
